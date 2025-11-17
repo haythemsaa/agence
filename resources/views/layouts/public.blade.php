@@ -89,6 +89,9 @@
                                             <x-dropdown-link :href="route('wishlist.index')">
                                                 Mes Favoris
                                             </x-dropdown-link>
+                                            <x-dropdown-link :href="route('referrals.index')">
+                                                Parrainage
+                                            </x-dropdown-link>
                                             <x-dropdown-link :href="route('profile.edit')">
                                                 Mon Profil
                                             </x-dropdown-link>
@@ -164,6 +167,9 @@
                                 </a>
                                 <a href="{{ route('wishlist.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
                                     Mes Favoris
+                                </a>
+                                <a href="{{ route('referrals.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
+                                    Parrainage
                                 </a>
                                 <a href="{{ route('profile.edit') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
                                     Mon Profil
