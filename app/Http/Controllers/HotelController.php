@@ -143,8 +143,15 @@ class HotelController extends Controller
                 Auth::user()->addLoyaltyPoints((int) $booking->total_price);
             }
 
-            return redirect()->route('booking.confirmation', $booking->id)
-                ->with('success', 'Réservation confirmée !');
+            // Envoyer l'email de confirmation
+            \Mail::to($validated['guest_email'])->send(
+                new \App\Mail\BookingConfirmation($booking, 'hotel')
+            );
+
+            return redirect()->route('payment.initiate')
+                ->with('booking_id', $booking->id)
+                ->with('booking_type', 'hotel_booking')
+                ->with('success', 'Réservation créée ! Procédez au paiement.');
 
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la réservation: ' . $e->getMessage());

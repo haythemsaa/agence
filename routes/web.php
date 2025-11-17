@@ -78,6 +78,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
+// Routes de paiement
+Route::middleware(['auth'])->prefix('payment')->name('payment.')->group(function () {
+    Route::post('/initiate', [\App\Http\Controllers\PaymentController::class, 'initiate'])->name('initiate');
+    Route::get('/success/{payment}', [\App\Http\Controllers\PaymentController::class, 'success'])->name('success');
+    Route::get('/cancel/{payment}', [\App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
+});
+
+// Webhook Stripe (sans auth middleware)
+Route::post('/webhook/stripe', [\App\Http\Controllers\PaymentController::class, 'stripeWebhook'])->name('webhook.stripe');
+
+// Routes de téléchargement de documents
+Route::middleware(['auth'])->group(function () {
+    Route::get('/voucher/hotel/{booking}', function ($bookingId) {
+        $booking = \App\Models\HotelBooking::findOrFail($bookingId);
+        return app(\App\Services\VoucherService::class)->generateHotelVoucher($booking);
+    })->name('voucher.hotel');
+
+    Route::get('/voucher/package/{booking}', function ($bookingId) {
+        $booking = \App\Models\PackageBooking::findOrFail($bookingId);
+        return app(\App\Services\VoucherService::class)->generatePackageVoucher($booking);
+    })->name('voucher.package');
+});
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard admin
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

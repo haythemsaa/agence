@@ -112,7 +112,14 @@ class TravelPackageController extends Controller
             Auth::user()->addLoyaltyPoints((int) $totalPrice);
         }
 
-        return redirect()->route('booking.confirmation', $booking->id)
-            ->with('success', 'Réservation enregistrée !');
+        // Envoyer l'email de confirmation
+        \Mail::to($validated['contact_email'])->send(
+            new \App\Mail\BookingConfirmation($booking, 'package')
+        );
+
+        return redirect()->route('payment.initiate')
+            ->with('booking_id', $booking->id)
+            ->with('booking_type', 'package_booking')
+            ->with('success', 'Réservation créée ! Procédez au paiement.');
     }
 }
