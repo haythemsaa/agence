@@ -48,6 +48,9 @@
 
                         <!-- Right Side -->
                         <div class="hidden sm:flex sm:items-center sm:ml-6 sm:space-x-3">
+                            <!-- Language Switcher -->
+                            <x-language-switcher />
+
                             <!-- Currency Switcher -->
                             <x-currency-switcher />
 

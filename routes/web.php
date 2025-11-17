@@ -27,6 +27,12 @@ Route::post('/search', [HomeController::class, 'search'])->name('search');
 // Currency Switcher
 Route::post('/currency/switch', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch');
 
+// Blog
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\BlogController::class, 'index'])->name('index');
+    Route::get('/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('show');
+});
+
 // Hôtels
 Route::prefix('hotels')->name('hotels.')->group(function () {
     Route::get('/', [HotelController::class, 'index'])->name('index');
