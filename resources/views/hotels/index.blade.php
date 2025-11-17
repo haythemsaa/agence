@@ -88,8 +88,12 @@
                                     </svg>
                                 </div>
                             @endif
+
+                            <!-- Wishlist Button -->
+                            <x-wishlist-button type="hotel" :id="$hotel->id" />
+
                             @if($hotel->is_featured)
-                                <div class="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                                     Vedette
                                 </div>
                             @endif

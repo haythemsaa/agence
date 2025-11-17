@@ -32,5 +32,31 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Tawk.to Live Chat Widget -->
+        @if(config('services.tawkto.property_id') && config('services.tawkto.widget_id'))
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/{{ config("services.tawkto.property_id") }}/{{ config("services.tawkto.widget_id") }}';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+
+            // Set user info if authenticated
+            @auth
+            Tawk_API.onLoad = function(){
+                Tawk_API.setAttributes({
+                    'name': '{{ auth()->user()->name }}',
+                    'email': '{{ auth()->user()->email }}',
+                    'hash': '{{ hash_hmac("sha256", auth()->user()->email, config("services.tawkto.api_key", "")) }}'
+                }, function(error){});
+            };
+            @endauth
+        </script>
+        @endif
     </body>
 </html>

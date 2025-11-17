@@ -95,13 +95,17 @@
                                 </svg>
                             </div>
                         </div>
+
+                        <!-- Wishlist Button -->
+                        <x-wishlist-button type="package" :id="$package->id" />
+
                         <div class="absolute top-3 left-3">
                             <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-xs font-semibold uppercase">
                                 {{ $package->type }}
                             </span>
                         </div>
                         @if($package->is_featured)
-                            <div class="absolute top-3 right-3">
+                            <div class="absolute bottom-3 left-3">
                                 <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
                                     ⭐ Vedette
                                 </span>

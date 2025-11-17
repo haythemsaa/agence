@@ -85,4 +85,26 @@ return [
         'base_url' => env('FLOUCI_BASE_URL', 'https://api.flouci.com'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | ExchangeRate API Configuration
+    |--------------------------------------------------------------------------
+    */
+    'exchangerate' => [
+        'key' => env('EXCHANGERATE_API_KEY', 'demo-key'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tawk.to Live Chat Configuration
+    |--------------------------------------------------------------------------
+    | Get your property_id and widget_id from: https://dashboard.tawk.to
+    | Format: https://embed.tawk.to/{property_id}/{widget_id}
+    */
+    'tawkto' => [
+        'property_id' => env('TAWKTO_PROPERTY_ID'),
+        'widget_id' => env('TAWKTO_WIDGET_ID'),
+        'api_key' => env('TAWKTO_API_KEY'), // Optional: for secure mode
+    ],
+
 ];

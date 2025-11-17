@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     /**
      * Check if user is admin
      */

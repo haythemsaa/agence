@@ -47,7 +47,10 @@
                         </div>
 
                         <!-- Right Side -->
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden sm:flex sm:items-center sm:ml-6 sm:space-x-3">
+                            <!-- Currency Switcher -->
+                            <x-currency-switcher />
+
                             @auth
                                 <div class="flex items-center space-x-4">
                                     <!-- Loyalty Badge -->
@@ -82,6 +85,9 @@
                                             @endif
                                             <x-dropdown-link :href="route('dashboard')">
                                                 Mes Réservations
+                                            </x-dropdown-link>
+                                            <x-dropdown-link :href="route('wishlist.index')">
+                                                Mes Favoris
                                             </x-dropdown-link>
                                             <x-dropdown-link :href="route('profile.edit')">
                                                 Mon Profil
@@ -135,6 +141,11 @@
                         </a>
                     </div>
 
+                    <!-- Currency Switcher Mobile -->
+                    <div class="px-4 py-3 border-t border-gray-200">
+                        <x-currency-switcher />
+                    </div>
+
                     @auth
                         <div class="pt-4 pb-1 border-t border-gray-200">
                             <div class="px-4">
@@ -150,6 +161,9 @@
                                 @endif
                                 <a href="{{ route('dashboard') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
                                     Mes Réservations
+                                </a>
+                                <a href="{{ route('wishlist.index') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
+                                    Mes Favoris
                                 </a>
                                 <a href="{{ route('profile.edit') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
                                     Mon Profil
@@ -263,5 +277,31 @@
                 </div>
             </footer>
         </div>
+
+        <!-- Tawk.to Live Chat Widget -->
+        @if(config('services.tawkto.property_id') && config('services.tawkto.widget_id'))
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/{{ config("services.tawkto.property_id") }}/{{ config("services.tawkto.widget_id") }}';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+
+            // Set user info if authenticated
+            @auth
+            Tawk_API.onLoad = function(){
+                Tawk_API.setAttributes({
+                    'name': '{{ auth()->user()->name }}',
+                    'email': '{{ auth()->user()->email }}',
+                    'hash': '{{ hash_hmac("sha256", auth()->user()->email, config("services.tawkto.api_key", "")) }}'
+                }, function(error){});
+            };
+            @endauth
+        </script>
+        @endif
     </body>
 </html>

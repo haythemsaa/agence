@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/search', [HomeController::class, 'search'])->name('search');
 
+// Currency Switcher
+Route::post('/currency/switch', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch');
+
 // Hôtels
 Route::prefix('hotels')->name('hotels.')->group(function () {
     Route::get('/', [HotelController::class, 'index'])->name('index');
@@ -70,6 +73,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Wishlist/Favoris
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\WishlistController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\WishlistController::class, 'store'])->name('store');
+        Route::delete('/{wishlist}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('destroy');
+        Route::post('/check', [\App\Http\Controllers\WishlistController::class, 'check'])->name('check');
+    });
 });
 
 /*
