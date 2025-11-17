@@ -116,23 +116,59 @@ CREATE DATABASE agence_voyage CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 EXIT;
 ```
 
-### 5. Exécuter les Migrations
+### 5. Exécuter les Migrations et Seeders
 
 ```bash
+# Exécuter les migrations
 php artisan migrate
+
+# Peupler la base avec des données de test
+php artisan db:seed
 ```
 
-### 6. Lancer le Serveur
+Les seeders créeront automatiquement :
+- **1 administrateur** : admin@agence-voyage.tn / password
+- **3 clients test** avec différents niveaux de fidélité
+- **10 utilisateurs aléatoires**
+- **5 hôtels** en Tunisie (Hammamet, Djerba, Sousse)
+- **4 packages/circuits** :
+  - Circuit Grand Sud (7j/6n - 899 TND)
+  - Omra Économique (10j - 2999 TND)
+  - Istanbul City Break (4j - 1299 TND)
+  - Séjour Djerba All Inclusive (7j - 799 TND)
+
+### 6. Compiler les Assets
+
+```bash
+# Développement
+npm run dev
+
+# Production
+npm run build
+```
+
+### 7. Lancer le Serveur
 
 ```bash
 # Terminal 1 : Laravel
 php artisan serve
 
-# Terminal 2 : Vite (assets)
+# Terminal 2 : Vite (assets) - seulement en développement
 npm run dev
 ```
 
-Le site sera accessible sur : http://localhost:8000
+Le site sera accessible sur : **http://localhost:8000**
+
+### 8. Accéder à l'Application
+
+**Espace Client :**
+- URL : http://localhost:8000
+- Créer un compte via `/register`
+- Ou utiliser : mohamed@example.tn / password
+
+**Back-Office Admin :**
+- URL : http://localhost:8000/admin
+- Identifiants : admin@agence-voyage.tn / password
 
 ## ⚙️ Configuration
 
@@ -178,42 +214,106 @@ REDIS_PORT=6379
 agence/
 ├── app/
 │   ├── Http/
-│   │   └── Controllers/        # Controllers (Frontend & Admin)
+│   │   ├── Controllers/
+│   │   │   ├── HomeController.php              # Page d'accueil
+│   │   │   ├── HotelController.php             # Recherche et réservation hôtels
+│   │   │   ├── TravelPackageController.php     # Liste et réservation packages
+│   │   │   ├── BookingController.php           # Gestion réservations
+│   │   │   ├── ReviewController.php            # Avis clients
+│   │   │   ├── Admin/
+│   │   │   │   ├── DashboardController.php     # Dashboard admin
+│   │   │   │   ├── HotelBookingController.php  # CRUD réservations hôtels
+│   │   │   │   ├── PackageBookingController.php # CRUD réservations packages
+│   │   │   │   ├── TravelPackageController.php # CRUD packages
+│   │   │   │   ├── UserController.php          # Gestion utilisateurs
+│   │   │   │   └── ReviewController.php        # Modération avis
+│   │   │   └── Auth/                           # Authentification (Breeze)
+│   │   └── Middleware/
+│   │       └── AdminMiddleware.php             # Protection routes admin
+│   │
 │   ├── Models/                 # Eloquent Models
-│   │   ├── User.php
-│   │   ├── Hotel.php
-│   │   ├── HotelBooking.php
-│   │   ├── TravelPackage.php
-│   │   ├── PackageBooking.php
-│   │   ├── Payment.php
-│   │   └── Review.php
+│   │   ├── User.php            # Utilisateurs + fidélité
+│   │   ├── Hotel.php           # Hôtels (cache API)
+│   │   ├── HotelBooking.php    # Réservations hôtels
+│   │   ├── TravelPackage.php   # Circuits/packages
+│   │   ├── PackageBooking.php  # Réservations packages
+│   │   ├── Payment.php         # Paiements (polymorphic)
+│   │   └── Review.php          # Avis (polymorphic)
+│   │
 │   └── Services/               # Services métier
-│       └── HotelbedsService.php
+│       └── HotelbedsService.php # Intégration API Hotelbeds
 │
 ├── database/
-│   └── migrations/             # Migrations de base de données
-│       ├── create_hotels_table.php
-│       ├── create_hotel_bookings_table.php
-│       ├── create_travel_packages_table.php
-│       ├── create_package_bookings_table.php
-│       ├── create_payments_table.php
-│       ├── create_reviews_table.php
-│       └── add_fields_to_users_table.php
+│   ├── migrations/             # Structure base de données
+│   │   ├── create_hotels_table.php
+│   │   ├── create_hotel_bookings_table.php
+│   │   ├── create_travel_packages_table.php
+│   │   ├── create_package_bookings_table.php
+│   │   ├── create_payments_table.php
+│   │   ├── create_reviews_table.php
+│   │   └── add_fields_to_users_table.php
+│   │
+│   └── seeders/                # Données de test
+│       ├── DatabaseSeeder.php
+│       ├── UserSeeder.php      # Admin + clients
+│       ├── HotelSeeder.php     # 5 hôtels
+│       └── TravelPackageSeeder.php # 4 packages
 │
 ├── resources/
 │   ├── views/                  # Templates Blade
-│   └── js/                     # Vue.js Components
+│   │   ├── auth/               # Authentification (Breeze)
+│   │   ├── layouts/            # Layouts (app, guest, navigation)
+│   │   ├── profile/            # Gestion profil
+│   │   └── dashboard.blade.php # Dashboard client
+│   └── js/                     # Alpine.js + Tailwind
 │
 ├── routes/
-│   ├── web.php                 # Routes web
+│   ├── web.php                 # Routes publiques + auth + admin
+│   ├── auth.php                # Routes authentification (Breeze)
 │   └── api.php                 # Routes API
 │
 ├── config/
-│   └── services.php            # Configuration APIs
+│   └── services.php            # Config APIs (Hotelbeds, Stripe, PayPal, Flouci)
 │
 ├── .env.example                # Template environnement
+├── README.md
 ├── Cahier_Charges_Agence_Voyage_Tunisie.md
 └── Guide_APIs_Hotels_Tunisie.md
+```
+
+## 🛣️ Routes Principales
+
+### Routes Publiques
+```
+GET  /                      Page d'accueil
+GET  /hotels               Liste hôtels
+GET  /hotels/search        Recherche hôtels (API Hotelbeds)
+GET  /hotels/{id}          Détails hôtel
+GET  /packages             Liste packages
+GET  /packages/{slug}      Détails package
+```
+
+### Routes Authentifiées (Clients)
+```
+GET  /dashboard            Dashboard client
+GET  /profile              Gestion profil
+GET  /hotels/{id}/book     Formulaire réservation hôtel
+POST /hotels/{id}/book     Créer réservation hôtel
+GET  /packages/{slug}/book Formulaire réservation package
+POST /packages/{slug}/book Créer réservation package
+POST /reviews              Créer avis
+```
+
+### Routes Admin (protégées par middleware)
+```
+GET  /admin                      Dashboard admin
+Resource /admin/hotel-bookings   Gestion réservations hôtels
+Resource /admin/package-bookings Gestion réservations packages
+Resource /admin/packages         CRUD packages/circuits
+Resource /admin/users            Gestion utilisateurs
+GET  /admin/reviews              Liste avis
+POST /admin/reviews/{id}/publish Publier avis
+POST /admin/reviews/{id}/respond Répondre à avis
 ```
 
 ## 🌐 APIs Intégrées
@@ -347,25 +447,38 @@ Pour plus de détails, consultez :
 
 ## 🚀 Roadmap
 
-### Phase 1 (MVP - 3 mois) ✅
+### Phase 1 (MVP - 3 mois) ✅ EN COURS
 - [x] Architecture Laravel + Base de données
 - [x] Intégration Hotelbeds API
-- [x] Models et Migrations
-- [ ] Module réservation hôtels
-- [ ] Système de paiement (Stripe)
+- [x] Models et Migrations complets
+- [x] **Authentification Laravel Breeze**
+- [x] **Controllers Frontend (Home, Hotels, Packages)**
+- [x] **Controllers Admin (Dashboard, CRUD complets)**
+- [x] **Routes organisées (publiques, auth, admin)**
+- [x] **Middleware Admin**
+- [x] **Seeders avec données de test**
+- [x] **Service Hotelbeds fonctionnel**
+- [ ] **Vues Blade frontend (home, hotels, packages)**
+- [ ] **Vues Blade admin complètes**
+- [ ] **Intégration Stripe Payment**
+- [ ] **Système de reviews UI**
 
 ### Phase 2 (6 mois)
-- [ ] Module voyages organisés
-- [ ] Espace client complet
-- [ ] Programme fidélité
-- [ ] Back-office admin
-- [ ] Multi-paiement (PayPal, Flouci)
+- [ ] Intégration PayPal et Flouci
+- [ ] Module emails (confirmations, notifications)
+- [ ] Système de vouchers PDF
+- [ ] Programme fidélité UI complète
+- [ ] Dashboard analytics avancés
+- [ ] Export rapports Excel/PDF
+- [ ] Multi-langue (FR/EN/AR)
 
 ### Phase 3 (12 mois)
 - [ ] Application mobile (Flutter)
-- [ ] API publique partenaires
-- [ ] Chatbot IA
-- [ ] Analytics avancés
+- [ ] API publique pour partenaires
+- [ ] Chatbot IA support client
+- [ ] Analytics avancés (Google Analytics)
+- [ ] Système de recommandations ML
+- [ ] Intégration réseaux sociaux
 
 ## 🤝 Contribution
 
