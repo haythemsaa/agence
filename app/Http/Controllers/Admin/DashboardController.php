@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\HotelBooking;
 use App\Models\PackageBooking;
 use App\Models\User;
+use App\Models\Review;
+use App\Models\TravelPackage;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,29 +21,106 @@ class DashboardController extends Controller
 
     public function index()
     {
-        // KPIs
+        // Statistiques générales
         $stats = [
             'total_users' => User::count(),
+            'new_users_this_month' => User::whereMonth('created_at', now()->month)->count(),
             'total_hotel_bookings' => HotelBooking::count(),
             'total_package_bookings' => PackageBooking::count(),
-            'total_revenue' => Payment::completed()->sum('amount'),
-            'pending_bookings' => HotelBooking::pending()->count() + PackageBooking::pending()->count(),
-            'today_revenue' => Payment::completed()->whereDate('created_at', today())->sum('amount'),
-            'this_month_revenue' => Payment::completed()->whereMonth('created_at', now()->month)->sum('amount'),
+            'pending_reviews' => Review::where('is_published', false)->count(),
+            'active_packages' => TravelPackage::where('is_active', true)->count(),
+            'total_revenue' => HotelBooking::where('status', 'confirmed')->sum('total_price') +
+                              PackageBooking::where('status', 'confirmed')->sum('total_price'),
+            'monthly_revenue' => HotelBooking::whereMonth('created_at', now()->month)
+                ->where('status', 'confirmed')->sum('total_price') +
+                PackageBooking::whereMonth('created_at', now()->month)
+                ->where('status', 'confirmed')->sum('total_price'),
+            'today_revenue' => HotelBooking::whereDate('created_at', today())
+                ->where('status', 'confirmed')->sum('total_price') +
+                PackageBooking::whereDate('created_at', today())
+                ->where('status', 'confirmed')->sum('total_price'),
+            'pending_bookings' => HotelBooking::where('status', 'pending')->count() +
+                                 PackageBooking::where('status', 'pending')->count(),
+            'confirmed_bookings' => HotelBooking::where('status', 'confirmed')->count() +
+                                   PackageBooking::where('status', 'confirmed')->count(),
         ];
 
-        // Dernières réservations
-        $recentHotelBookings = HotelBooking::with('user')->latest()->take(10)->get();
-        $recentPackageBookings = PackageBooking::with(['user', 'travelPackage'])->latest()->take(10)->get();
-
-        // Graphique revenus par jour (30 derniers jours)
-        $revenueChart = Payment::completed()
-            ->where('created_at', '>=', now()->subDays(30))
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total'))
-            ->groupBy('date')
-            ->orderBy('date')
+        // Réservations récentes
+        $recent_hotel_bookings = HotelBooking::with('user')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentHotelBookings', 'recentPackageBookings', 'revenueChart'));
+        $recent_package_bookings = PackageBooking::with(['user', 'package'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Revenus des 30 derniers jours (par jour)
+        $revenue_data = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $hotel_revenue = HotelBooking::whereDate('created_at', $date)
+                ->where('status', 'confirmed')
+                ->sum('total_price');
+            $package_revenue = PackageBooking::whereDate('created_at', $date)
+                ->where('status', 'confirmed')
+                ->sum('total_price');
+
+            $revenue_data[] = [
+                'date' => $date,
+                'hotel' => $hotel_revenue,
+                'package' => $package_revenue,
+                'total' => $hotel_revenue + $package_revenue,
+            ];
+        }
+
+        // Top packages par réservations
+        $top_packages = TravelPackage::withCount('bookings')
+            ->orderBy('bookings_count', 'desc')
+            ->take(5)
+            ->get();
+
+        // Distribution par niveau de fidélité
+        $loyalty_distribution = User::select('loyalty_level', DB::raw('count(*) as count'))
+            ->groupBy('loyalty_level')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->loyalty_level => $item->count];
+            });
+
+        // Statistiques de paiement
+        $payment_stats = [];
+        if (Payment::count() > 0) {
+            $payment_stats = [
+                'stripe' => Payment::where('payment_method', 'stripe')
+                    ->where('status', 'completed')->count(),
+                'paypal' => Payment::where('payment_method', 'paypal')
+                    ->where('status', 'completed')->count(),
+                'flouci' => Payment::where('payment_method', 'flouci')
+                    ->where('status', 'completed')->count(),
+                'bank_transfer' => Payment::where('payment_method', 'bank_transfer')
+                    ->where('status', 'completed')->count(),
+                'cash' => Payment::where('payment_method', 'cash')
+                    ->where('status', 'completed')->count(),
+            ];
+        }
+
+        // Taux de conversion (réservations confirmées / total)
+        $total_bookings = $stats['total_hotel_bookings'] + $stats['total_package_bookings'];
+        $conversion_rate = $total_bookings > 0
+            ? round(($stats['confirmed_bookings'] / $total_bookings) * 100, 2)
+            : 0;
+
+        return view('admin.dashboard', compact(
+            'stats',
+            'recent_hotel_bookings',
+            'recent_package_bookings',
+            'revenue_data',
+            'top_packages',
+            'loyalty_distribution',
+            'payment_stats',
+            'conversion_rate'
+        ));
     }
 }

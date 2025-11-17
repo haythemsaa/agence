@@ -121,6 +121,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('reviews', AdminReviewController::class)->only(['index', 'edit', 'update', 'destroy']);
     Route::post('reviews/{review}/publish', [AdminReviewController::class, 'publish'])->name('reviews.publish');
     Route::post('reviews/{review}/respond', [AdminReviewController::class, 'respond'])->name('reviews.respond');
+
+    // Export de données
+    Route::prefix('export')->name('export.')->group(function () {
+        Route::get('/hotel-bookings', [\App\Http\Controllers\Admin\ExportController::class, 'hotelBookings'])->name('hotel-bookings');
+        Route::get('/package-bookings', [\App\Http\Controllers\Admin\ExportController::class, 'packageBookings'])->name('package-bookings');
+        Route::get('/users', [\App\Http\Controllers\Admin\ExportController::class, 'users'])->name('users');
+        Route::get('/revenue', [\App\Http\Controllers\Admin\ExportController::class, 'revenue'])->name('revenue');
+    });
 });
 
 require __DIR__.'/auth.php';
