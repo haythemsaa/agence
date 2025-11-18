@@ -46,6 +46,18 @@ Route::prefix('packages')->name('packages.')->group(function () {
     Route::get('/{slug}', [TravelPackageController::class, 'show'])->name('show');
 });
 
+// Gift Vouchers
+Route::prefix('gift-vouchers')->name('gift-vouchers.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\GiftVoucherController::class, 'index'])->name('index');
+    Route::get('/{code}', [\App\Http\Controllers\GiftVoucherController::class, 'show'])->name('show');
+    Route::post('/check', [\App\Http\Controllers\GiftVoucherController::class, 'check'])->name('check');
+});
+
+// Physical Agencies
+Route::get('/agencies', function () {
+    return view('agencies');
+})->name('agencies');
+
 /*
 |--------------------------------------------------------------------------
 | Routes Authentifiées (Clients)
@@ -87,6 +99,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{wishlist}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('destroy');
         Route::post('/check', [\App\Http\Controllers\WishlistController::class, 'check'])->name('check');
     });
+
+    // Gift Voucher Purchase (requires auth)
+    Route::post('/gift-vouchers/purchase', [\App\Http\Controllers\GiftVoucherController::class, 'purchase'])->name('gift-vouchers.purchase');
 });
 
 /*

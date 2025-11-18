@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Trust Badges Configuration
+    |--------------------------------------------------------------------------
+    | Statistics and metrics for trust indicators
+    */
+    'years_experience' => env('TRUST_YEARS_EXPERIENCE', 15),
+    'total_clients' => env('TRUST_TOTAL_CLIENTS', 50000),
+    'google_rating' => env('TRUST_GOOGLE_RATING', 4.8),
+    'google_reviews' => env('TRUST_GOOGLE_REVIEWS', 2341),
+
 ];

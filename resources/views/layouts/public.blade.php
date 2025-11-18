@@ -287,6 +287,9 @@
             </footer>
         </div>
 
+        <!-- WhatsApp Floating Button -->
+        <x-whatsapp-button />
+
         <!-- Tawk.to Live Chat Widget -->
         @if(config('services.tawkto.property_id') && config('services.tawkto.widget_id'))
         <script type="text/javascript">

@@ -107,4 +107,15 @@ return [
         'api_key' => env('TAWKTO_API_KEY'), // Optional: for secure mode
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Business Configuration
+    |--------------------------------------------------------------------------
+    | Direct contact button with pre-filled messages
+    */
+    'whatsapp' => [
+        'number' => env('WHATSAPP_NUMBER', '21612345678'),
+        'default_message' => env('WHATSAPP_DEFAULT_MESSAGE', 'Bonjour, je souhaite des informations sur vos offres de voyage.'),
+    ],
+
 ];
