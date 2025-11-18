@@ -48,7 +48,8 @@ class HomeController extends Controller
             ['code' => 'TAB', 'name' => 'Tabarka', 'image' => '/images/destinations/tabarka.jpg'],
         ];
 
-        return view('home', compact(
+        // Utiliser la nouvelle vue moderne
+        return view('home-modern', compact(
             'featuredHotels',
             'featuredPackages',
             'recentReviews',
