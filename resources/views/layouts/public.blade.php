@@ -260,15 +260,18 @@
                                 <li><a href="{{ route('packages.index') }}" class="hover:text-white">Voyages organisés</a></li>
                                 <li><a href="{{ route('packages.index') }}?type=omra" class="hover:text-white">Omra</a></li>
                                 <li><a href="{{ route('packages.index') }}?type=circuit" class="hover:text-white">Circuits</a></li>
+                                <li><a href="{{ route('visa-services') }}" class="hover:text-white">Services Visa</a></li>
+                                <li><a href="{{ route('gift-vouchers.index') }}" class="hover:text-white">Chèques Cadeaux</a></li>
                             </ul>
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold mb-4">Informations</h3>
                             <ul class="space-y-2 text-sm text-gray-400">
+                                <li><a href="{{ route('agencies') }}" class="hover:text-white">Nos Agences</a></li>
+                                <li><a href="{{ route('blog.index') }}" class="hover:text-white">Blog Voyage</a></li>
                                 <li><a href="#" class="hover:text-white">À propos</a></li>
                                 <li><a href="#" class="hover:text-white">Conditions générales</a></li>
                                 <li><a href="#" class="hover:text-white">Politique de confidentialité</a></li>
-                                <li><a href="#" class="hover:text-white">Contact</a></li>
                             </ul>
                         </div>
                         <div>

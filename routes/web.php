@@ -58,6 +58,11 @@ Route::get('/agencies', function () {
     return view('agencies');
 })->name('agencies');
 
+// Visa Services
+Route::get('/visa-services', function () {
+    return view('visa-services');
+})->name('visa-services');
+
 /*
 |--------------------------------------------------------------------------
 | Routes Authentifiées (Clients)
