@@ -2,16 +2,21 @@
     <x-slot name="title">Accueil</x-slot>
 
     <!-- Hero Section with Search -->
-    <div class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">
-                    Découvrez la Tunisie et le Monde
-                </h1>
-                <p class="text-xl text-blue-100">
-                    Hôtels, circuits, Omra et voyages organisés - Réservez en toute confiance
-                </p>
-            </div>
+    <x-hero-section variant="primary">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white drop-shadow-lg">
+                Découvrez la Tunisie et le Monde
+            </h1>
+            <p class="text-xl lg:text-2xl text-blue-100 mb-2">
+                Hôtels, circuits, Omra et voyages organisés
+            </p>
+            <p class="text-lg text-blue-200 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Plus de 50,000 voyageurs satisfaits | 15+ ans d'expérience
+            </p>
+        </div>
 
             <!-- Search Tabs -->
             <div class="max-w-4xl mx-auto">
@@ -97,10 +102,13 @@
                 </div>
             </div>
         </div>
-    </div>
+    </x-hero-section>
 
     <!-- Trust Badges -->
     <x-trust-badges />
+
+    <!-- Stats Section -->
+    <x-stats-section />
 
     <!-- Featured Hotels Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -316,4 +324,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Testimonials Section -->
+    <x-testimonials-section :reviews="$recentReviews" />
+
+    <!-- FAQ Section -->
+    <x-faq-section />
+
+    <!-- Newsletter Section -->
+    <x-newsletter-section />
 </x-public-layout>
